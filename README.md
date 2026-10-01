@@ -1,91 +1,73 @@
 # 📚 RAG Document Q&A Assistant
 
-A Retrieval-Augmented Generation (RAG) based document question-answering assistant built with Python, LangChain, OpenAI, FAISS, and Streamlit.
+A Retrieval-Augmented Generation (RAG) application that allows users to ask questions about PDF documents and receive grounded answers using retrieved document context.
 
-The application allows users to upload PDF documents, process them into a searchable vector database, and ask natural-language questions about the uploaded documents.
+Built with **Python, LangChain, OpenAI, FAISS, and Streamlit**.
 
 ---
 
 ## 🚀 Features
 
-- 📄 Upload PDF documents
-- 📚 Support multiple PDF documents
-- ✂️ Split documents into smaller chunks
-- 🧠 Generate embeddings using OpenAI
-- 🔎 Semantic document retrieval using FAISS
-- 🤖 Generate answers using an OpenAI LLM
-- 📌 Display retrieved document sources
-- 📑 Display source page numbers
-- 💬 Interactive Streamlit chat interface
-- 🛡️ Grounded responses using retrieved document context
-- ⚠️ Clean error handling
-- 🔄 Rebuild the vector store when documents are processed
-- 🚫 Detect duplicate PDF uploads
+* 📄 Upload PDF documents through the Streamlit interface
+* 📚 Support multiple PDF documents
+* 🔍 Semantic search using vector embeddings
+* 🧠 OpenAI embeddings for document representation
+* ⚡ FAISS vector store for fast similarity search
+* 🤖 OpenAI LLM for answer generation
+* 🎯 Top-K relevant document chunk retrieval
+* 🔎 Search across all documents
+* 📑 Option to restrict retrieval to a specific document
+* 📄 Display retrieved source documents and page numbers
+* 🛡️ Grounded responses using retrieved document context
+* 💬 Interactive Streamlit chat interface
+* ⚠️ Handles missing documents and configuration errors
+* 🔄 Rebuilds the vector store when documents are processed
 
 ---
 
 ## 🏗️ Architecture
 
 ```text
-                    ┌─────────────────┐
-                    │  PDF Documents  │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │ PDF Document    │
-                    │ Loader          │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │  Text Splitter  │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │ OpenAI          │
-                    │ Embeddings      │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │ FAISS Vector    │
-                    │ Store           │
-                    └────────┬────────┘
-                             │
-                             │
-User Question ───────────────┤
-                             ▼
-                    ┌─────────────────┐
-                    │    Retriever    │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │ Retrieved       │
-                    │ Context         │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │   LLM + Prompt  │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │     Answer      │
+                    PDF Documents
+                          │
+                          ▼
+                  PDF Document Loader
+                          │
+                          ▼
+                    Text Splitter
+                          │
+                          ▼
+                   OpenAI Embeddings
+                          │
+                          ▼
+                    FAISS Vector Store
+                          │
+                          │
+                    User Question
+                          │
+                          ▼
+                       Retriever
+                          │
+                          ▼
+                 Retrieved Context
+                          │
+                          ▼
+                  Prompt + OpenAI LLM
+                          │
+                          ▼
+                        Answer
+```
 
-                    
-## 📁 Project Structure           
+---
 
+## 📁 Project Structure
+
+```text
 rag-document-qa/
 │
 ├── data/
 │   └── documents/
-│       ├── python_guide.pdf
-│       ├── machine_learning_guide.pdf
-│       └── ...
+│       └── PDF documents
 │
 ├── vectorstore/
 │   └── faiss_index/
@@ -103,214 +85,320 @@ rag-document-qa/
 │
 ├── app.py
 ├── ingest.py
-├── README.md
 ├── requirements.txt
-└── .gitignore   └─────────────────┘
+├── .gitignore
+└── README.md
+```
 
-⚙️ Installation
-1. Clone the repository
-git clone <your-github-repository-url>
+> `.env`, uploaded PDFs, and the generated FAISS vector store are excluded from Git using `.gitignore`.
+
+---
+
+## 🛠️ Technologies Used
+
+| Technology    | Purpose                         |
+| ------------- | ------------------------------- |
+| Python        | Application development         |
+| LangChain     | RAG pipeline components         |
+| OpenAI        | Embeddings and LLM              |
+| FAISS         | Vector similarity search        |
+| PyPDF         | PDF document loading            |
+| Streamlit     | Web application interface       |
+| python-dotenv | Environment variable management |
+
+---
+
+## ⚙️ Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/himanshu0988/rag-document-qa.git
+```
+
+```bash
 cd rag-document-qa
-2. Create a virtual environment
-python -m venv .venv
-3. Activate the virtual environment
-Windows PowerShell
-.\.venv\Scripts\Activate.ps1
+```
 
-If PowerShell does not allow activation, run:
+### 2. Create a virtual environment
 
+Windows PowerShell:
+
+```powershell
+python -m venv venv
+```
+
+Activate it:
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+If PowerShell blocks activation:
+
+```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
 Then activate again:
 
-.\.venv\Scripts\Activate.ps1
-4. Install dependencies
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+### 3. Install dependencies
+
+```powershell
 pip install -r requirements.txt
-🔐 Environment Variables
+```
 
-Create a .env file in the project root:
+---
 
+## 🔐 Environment Variables
+
+Create a `.env` file in the project root:
+
+```text
 OPENAI_API_KEY=your_openai_api_key
+```
 
-The .env file contains the API key and should never be uploaded to GitHub.
+Example project structure:
 
-The project uses python-dotenv to load the API key from the .env file.
+```text
+rag-document-qa/
+├── .env
+├── app.py
+├── ingest.py
+└── ...
+```
 
-📄 Documents
+**Never commit your `.env` file or API key to GitHub.**
 
-Place PDF documents inside:
+---
 
+## 📄 Adding Documents
+
+PDF documents can be uploaded directly through the Streamlit sidebar.
+
+The application stores uploaded PDFs in:
+
+```text
 data/documents/
+```
 
-Example:
+The application supports two retrieval modes:
 
-data/
-└── documents/
-    ├── python_guide.pdf
-    ├── machine_learning_guide.pdf
-    └── deep_learning_guide.pdf
+### All Documents
 
-The application supports multiple PDF documents.
+Searches across all PDFs in the knowledge base.
 
-Documents can also be uploaded directly through the Streamlit sidebar.
+### Select a Document
 
-🗂️ Vector Store
+Restricts retrieval to the selected PDF using document metadata.
 
-The project uses FAISS as the vector database.
+---
 
-During document processing:
+## 🗄️ Vector Store
 
-PDF
+The application uses **FAISS** to store document embeddings.
+
+The vector store is generated at:
+
+```text
+vectorstore/faiss_index/
+```
+
+It is intentionally excluded from GitHub because it is a generated artifact.
+
+To rebuild the vector store manually:
+
+```powershell
+python ingest.py
+```
+
+The ingestion pipeline performs:
+
+```text
+PDFs
  ↓
-Text Extraction
+Document Loading
  ↓
 Text Chunking
  ↓
-Embeddings
+OpenAI Embeddings
  ↓
 FAISS Vector Store
+```
 
-The FAISS index is stored locally in:
+---
 
-vectorstore/faiss_index/
+## ▶️ Running the Application
 
-The vector store is generated automatically when documents are processed.
+Start Streamlit:
 
-The vectorstore/ directory is excluded from GitHub using .gitignore.
-
-▶️ Running the Application
-1. Activate the virtual environment
-.\.venv\Scripts\Activate.ps1
-2. Process the documents
-python ingest.py
-
-This creates the FAISS vector store from the PDFs.
-
-3. Start the Streamlit application
+```powershell
 streamlit run app.py
+```
 
-The application will open in your browser.
+Then open:
 
-You can then:
+```text
+http://localhost:8501
+```
 
-Upload a PDF document.
-Click Process Document.
-Ask questions about the documents.
-View the retrieved sources and page numbers.
-❓ Example Questions
+---
 
-You can ask questions such as:
+## 💬 Example Questions
 
-What is a Python list?
-What is supervised learning?
-What is the difference between classification and regression?
-What is deep learning?
-What are neural networks?
-What is the purpose of feature engineering?
-What is NLP?
-What are the advantages of machine learning?
+Depending on the documents uploaded, example questions could include:
 
-The assistant answers questions using information retrieved from the uploaded documents.
+```text
+What are the main features of Python?
+```
 
-🧠 How RAG Works
+```text
+How are machine learning and deep learning different?
+```
 
-This project uses Retrieval-Augmented Generation (RAG).
+```text
+What concepts are discussed in this document?
+```
 
-The complete workflow is:
+You can also select a specific document and ask questions about that document only.
 
-PDF Documents
-      ↓
-Document Loader
-      ↓
-Text Splitter
-      ↓
-OpenAI Embeddings
-      ↓
-FAISS Vector Store
+---
 
+## 🧠 How RAG Works
+
+### 1. Document Loading
+
+PDF documents are loaded using `PyPDFLoader`.
+
+### 2. Text Chunking
+
+Large documents are divided into smaller chunks using `RecursiveCharacterTextSplitter`.
+
+The current configuration uses:
+
+```text
+Chunk Size: 1500
+Chunk Overlap: 300
+```
+
+### 3. Embeddings
+
+Each document chunk is converted into a numerical vector using:
+
+```text
+text-embedding-3-small
+```
+
+### 4. Vector Storage
+
+The generated vectors are stored in a FAISS vector database.
+
+### 5. Retrieval
+
+When a user asks a question, the system performs similarity search and retrieves the most relevant chunks.
+
+The current configuration retrieves:
+
+```text
+Top-K = 6
+```
+
+### 6. Context Construction
+
+The retrieved chunks are combined into a context passed to the LLM.
+
+### 7. Prompting
+
+The prompt instructs the LLM to answer using only the retrieved context.
+
+### 8. Answer Generation
+
+The OpenAI LLM generates the final answer using the retrieved document information.
+
+```text
 User Question
       ↓
-Retriever
+Similarity Search
       ↓
-Relevant Document Chunks
+Relevant Chunks
       ↓
-Prompt + Retrieved Context
+Retrieved Context
       ↓
-LLM
+Prompt
       ↓
-Answer
-Step 1 — Document Loading
+OpenAI LLM
+      ↓
+Grounded Answer
+```
 
-PDF documents are loaded using PyPDFLoader.
+---
 
-Step 2 — Text Splitting
+## 🛡️ Grounding and Hallucination Control
 
-Large documents are divided into smaller chunks using a recursive text splitter.
+The application uses a prompt that instructs the model to:
 
-Step 3 — Embeddings
+* Use only retrieved document context
+* Avoid using outside information
+* Avoid inventing information
+* Clearly indicate when the answer cannot be found in the documents
 
-Each text chunk is converted into a numerical vector using OpenAI embeddings.
+When the retrieved context does not contain enough information, the application returns:
 
-Step 4 — Vector Storage
+```text
+I could not find the answer in the provided documents.
+```
 
-The embeddings are stored in a FAISS vector store.
+---
 
-Step 5 — Retrieval
+## 🔎 Source Retrieval
 
-When the user asks a question, the system searches FAISS for the most relevant document chunks.
+For each answer, the application provides a **View Retrieved Sources** section.
 
-Step 6 — Generation
+It displays:
 
-The retrieved context is provided to the LLM along with the user's question.
+* Source document name
+* Page number
+* Retrieved text preview
 
-Step 7 — Answer
+This helps users understand which document content was used to generate the answer.
 
-The LLM generates an answer based on the retrieved document context.
+---
 
-This helps the application provide answers grounded in the uploaded documents rather than relying only on the model's general knowledge.
-
-🚀 Future Improvements
+## 🔮 Future Improvements
 
 Possible future improvements include:
 
-Support for additional document formats such as DOCX and TXT
-Improved document management
-Conversation memory
-Streaming responses
-Better source citations
-Authentication and user accounts
-Cloud-based vector databases
-Advanced retrieval techniques
-Reranking retrieved documents
-Support for additional LLM providers
-Deployment to a cloud platform
-Improved user interface
-Document deletion and management
-Multi-user document collections
-🎯 Project Goal
+* Reranking retrieved documents
+* Metadata-based filtering by additional fields
+* Conversation-aware retrieval
+* Streaming LLM responses
+* Authentication and user management
+* Support for additional document formats
+* Improved retrieval strategies
+* Production deployment
+* Monitoring and logging
+* Automated RAG evaluation
 
-The goal of this project is to build a practical Retrieval-Augmented Generation (RAG) application that can answer questions from custom documents.
+---
 
-The project demonstrates practical experience with:
+## 🎯 Project Goal
 
-Python
-LangChain
-Large Language Models
-Generative AI
-Embeddings
-FAISS
-Natural Language Processing
-Document processing
-Information retrieval
-Streamlit
-Prompt engineering
-API integration
-👨‍💻 Author
+The goal of this project is to demonstrate an end-to-end **Retrieval-Augmented Generation pipeline** that combines document processing, semantic retrieval, vector search, prompt engineering, and LLM-based answer generation.
 
-Himanshu Kumar Singh
+The project is designed to provide answers grounded in a user's own document collection rather than relying only on the model's general knowledge.
 
-Aspiring AI Engineer | LLM / GenAI Enthusiast
+---
 
-Technologies Used
+## 👨‍💻 Author
 
-Python • LangChain • OpenAI • FAISS • Streamlit • NLP • Generative AI
+**Himanshu Kumar Singh**
+
+---
+
+## ⭐ Technologies
+
+**Python • LangChain • OpenAI • FAISS • Streamlit • PyPDF**
